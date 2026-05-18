@@ -199,6 +199,16 @@
       letter-spacing: 0.03em;
     }
 
+    .project-download-unavailable {
+      margin: 0;
+      color: #ffd0d0;
+      font-size: 0.92rem;
+      letter-spacing: 0.03em;
+      border: 1px dashed rgba(255, 194, 194, 0.4);
+      background: rgba(92, 23, 23, 0.26);
+      padding: 8px 12px;
+    }
+
     .project-download-cta {
       text-decoration: none;
       display: inline-flex;
@@ -451,6 +461,7 @@
         <h2>Скачати APK</h2>
         <p class="project-download-kicker">Актуальна версія додатку доступна для прямого завантаження.</p>
         <a class="project-download-cta" data-project-download href="#" hidden>Скачати APK</a>
+        <p class="project-download-unavailable" data-project-download-unavailable hidden>На даний час проект в розробці.</p>
         <button type="button" class="project-tester-open" data-tester-open>Доєднатись до команди тестувальників</button>
       </section>
 

@@ -64,6 +64,7 @@
       project_section_links: "Посилання",
       project_download_title: "Скачати APK",
       project_download_kicker: "Актуальна версія додатку доступна для прямого завантаження.",
+      project_download_unavailable: "На даний час проект в розробці.",
       project_tester_open: "Доєднатись до команди тестувальників",
       tester_modal_title: "Доєднатись до команди тестувальників",
       tester_modal_text:
@@ -149,6 +150,7 @@
       project_section_links: "Links",
       project_download_title: "Download APK",
       project_download_kicker: "The latest app build is available for direct download.",
+      project_download_unavailable: "The project is currently in development.",
       project_tester_open: "Join beta testers team",
       tester_modal_title: "Join beta testers team",
       tester_modal_text:
@@ -252,6 +254,7 @@
       setTextIf(".project-main > section:nth-of-type(6) h2", "project_section_release");
       setTextIf("[data-project-download-block] h2", "project_download_title");
       setTextIf("[data-project-download-block] .project-download-kicker", "project_download_kicker");
+      setTextIf("[data-project-download-unavailable]", "project_download_unavailable");
       setTextIf("[data-tester-open]", "project_tester_open");
       setTextIf("[data-tester-modal] h3", "tester_modal_title");
       setTextIf("[data-tester-modal] p", "tester_modal_text");
@@ -1063,7 +1066,7 @@
         return DEFAULT_PROJECTS.map(normalizeProject);
       }
       const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed) || parsed.length === 0) {
+      if (!Array.isArray(parsed)) {
         return DEFAULT_PROJECTS.map(normalizeProject);
       }
       return parsed.map(normalizeProject);
@@ -1471,6 +1474,7 @@
 
     const downloadBlock = document.querySelector("[data-project-download-block]");
     const downloadLink = document.querySelector("[data-project-download]");
+    const downloadUnavailable = document.querySelector("[data-project-download-unavailable]");
     const testerOpenBtn = document.querySelector("[data-tester-open]");
     const testerModal = document.querySelector("[data-tester-modal]");
     const testerCloseBtn = document.querySelector("[data-tester-close]");
@@ -1583,10 +1587,16 @@
         downloadLink.setAttribute("target", "_blank");
         downloadLink.setAttribute("rel", "noopener noreferrer");
         downloadLink.textContent = formatDownloadButtonText(project.appFileName || "");
+        downloadUnavailable?.setAttribute("hidden", "true");
         downloadBlock?.removeAttribute("hidden");
       } else {
+        downloadLink.removeAttribute("href");
         downloadLink.setAttribute("hidden", "true");
-        downloadBlock?.setAttribute("hidden", "true");
+        if (downloadUnavailable) {
+          downloadUnavailable.textContent = tr("project_download_unavailable");
+          downloadUnavailable.removeAttribute("hidden");
+        }
+        downloadBlock?.removeAttribute("hidden");
       }
     }
 
@@ -2234,8 +2244,16 @@
           setTimeout(() => syncRichField(fieldName), 0);
         });
         editor.addEventListener("paste", (event) => {
-          event.preventDefault();
           const text = event.clipboardData?.getData("text/plain") || "";
+
+          // Some browsers do not expose clipboardData for Ctrl+V in this context.
+          // In that case, allow native paste behavior instead of blocking it.
+          if (!text) {
+            setTimeout(() => syncRichField(fieldName), 0);
+            return;
+          }
+
+          event.preventDefault();
           const html = escapeHtml(text).replace(/\n/g, "<br>");
           document.execCommand("insertHTML", false, html);
           syncRichField(fieldName);
@@ -2687,7 +2705,7 @@
         }
 
         const next = projects.filter((item) => item.id !== deleteId);
-        const updatedProjects = saveProjects(next.length > 0 ? next : DEFAULT_PROJECTS);
+        const updatedProjects = saveProjects(next);
         const cloudResult = await saveProjectsToCloud(updatedProjects);
         const ghResult = await syncProjectsToGitHubAndReport(updatedProjects, `delete project ${project.id}`);
         if (state.editingId === deleteId) {
