@@ -2577,13 +2577,20 @@
         resetFormState();
         if (!ghResult.ok) {
           setStatus(`Імпорт виконано, але GitHub sync не вдався: ${ghResult.error}`, true);
+        } else if (ghResult.skipped) {
+          if (cloudResult.ok) {
+            setStatus(`Імпорт завершено: ${normalized.length} проект(ів) завантажено. GitHub sync вимкнено.`);
+          } else {
+            setStatus(
+              `Імпорт завершено локально: ${normalized.length} проект(ів). Cloud sync: ${cloudResult.reason}. GitHub sync вимкнено.`,
+              true
+            );
+          }
         } else if (cloudResult.ok) {
-          const suffix = ghResult.skipped ? "" : " GitHub оновлено.";
-          setStatus(`Імпорт завершено: ${normalized.length} проект(ів) завантажено.${suffix}`);
+          setStatus(`Імпорт завершено: ${normalized.length} проект(ів) завантажено. GitHub оновлено.`);
         } else {
-          const ghSuffix = ghResult.skipped ? "" : " GitHub оновлено.";
           setStatus(
-            `Імпорт завершено локально: ${normalized.length} проект(ів). Cloud sync: ${cloudResult.reason}.${ghSuffix}`,
+            `Імпорт завершено локально: ${normalized.length} проект(ів). Cloud sync: ${cloudResult.reason}. GitHub оновлено.`,
             true
           );
         }
@@ -2714,12 +2721,16 @@
         renderList();
         if (!ghResult.ok) {
           setStatus(`Проект видалено, але GitHub sync не вдався: ${ghResult.error}`, true);
+        } else if (ghResult.skipped) {
+          if (cloudResult.ok) {
+            setStatus(`Проект видалено: ${project.title}. GitHub sync вимкнено.`);
+          } else {
+            setStatus(`Проект видалено локально: ${project.title}. Cloud sync: ${cloudResult.reason}. GitHub sync вимкнено.`, true);
+          }
         } else if (cloudResult.ok) {
-          const suffix = ghResult.skipped ? "" : " GitHub оновлено.";
-          setStatus(`Проект видалено: ${project.title}.${suffix}`);
+          setStatus(`Проект видалено: ${project.title}. GitHub оновлено.`);
         } else {
-          const ghSuffix = ghResult.skipped ? "" : " GitHub оновлено.";
-          setStatus(`Проект видалено локально: ${project.title}. Cloud sync: ${cloudResult.reason}.${ghSuffix}`, true);
+          setStatus(`Проект видалено локально: ${project.title}. Cloud sync: ${cloudResult.reason}. GitHub оновлено.`, true);
         }
       }
     });
@@ -2944,13 +2955,22 @@
       renderList();
       if (!ghResult.ok) {
         setStatus(`Проект збережено, але GitHub sync не вдався: ${ghResult.error}`, true);
+      } else if (ghResult.skipped) {
+        if (cloudResult.ok) {
+          setStatus(`Збережено проект: ${payload.title}. Політика створена за адресою ${payload.privacyUrl}. GitHub sync вимкнено.`);
+        } else {
+          setStatus(
+            `Проект збережено локально: ${payload.title}. Політика: ${payload.privacyUrl}. Cloud sync: ${cloudResult.reason}. GitHub sync вимкнено.`,
+            true
+          );
+        }
       } else if (cloudResult.ok) {
-        const suffix = ghResult.skipped ? "" : ` GitHub файл оновлено (${ghResult.path}).`;
-        setStatus(`Збережено проект: ${payload.title}. Політика створена за адресою ${payload.privacyUrl}.${suffix}`);
-      } else {
-        const ghSuffix = ghResult.skipped ? "" : " GitHub оновлено.";
         setStatus(
-          `Проект збережено локально: ${payload.title}. Політика: ${payload.privacyUrl}. Cloud sync: ${cloudResult.reason}.${ghSuffix}`,
+          `Збережено проект: ${payload.title}. Політика створена за адресою ${payload.privacyUrl}. GitHub файл оновлено (${ghResult.path}).`
+        );
+      } else {
+        setStatus(
+          `Проект збережено локально: ${payload.title}. Політика: ${payload.privacyUrl}. Cloud sync: ${cloudResult.reason}. GitHub оновлено.`,
           true
         );
       }
@@ -2975,12 +2995,16 @@
       clearEditMode();
       if (!ghResult.ok) {
         setStatus(`Список скинуто, але GitHub sync не вдався: ${ghResult.error}`, true);
+      } else if (ghResult.skipped) {
+        if (cloudResult.ok) {
+          setStatus("Список проектів скинуто до стандартного шаблону. GitHub sync вимкнено.");
+        } else {
+          setStatus(`Список скинуто локально. Cloud sync: ${cloudResult.reason}. GitHub sync вимкнено.`, true);
+        }
       } else if (cloudResult.ok) {
-        const suffix = ghResult.skipped ? "" : " GitHub оновлено.";
-        setStatus(`Список проектів скинуто до стандартного шаблону.${suffix}`);
+        setStatus("Список проектів скинуто до стандартного шаблону. GitHub оновлено.");
       } else {
-        const ghSuffix = ghResult.skipped ? "" : " GitHub оновлено.";
-        setStatus(`Список скинуто локально. Cloud sync: ${cloudResult.reason}.${ghSuffix}`, true);
+        setStatus(`Список скинуто локально. Cloud sync: ${cloudResult.reason}. GitHub оновлено.`, true);
       }
     });
 
