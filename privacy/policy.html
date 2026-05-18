@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Політика конфіденційності проекту MAXONIK" />
+  <title>MAXONIK | Privacy Policy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    .policy-shell {
+      width: min(980px, 92vw);
+      margin-inline: auto;
+      padding-bottom: 80px;
+    }
+
+    .policy-main {
+      margin-top: calc(var(--topbar-h) + 18px);
+      display: grid;
+      gap: 14px;
+    }
+
+    .policy-block {
+      padding: 16px;
+      border-left: 2px solid rgba(0, 241, 255, 0.35);
+      background: linear-gradient(120deg, rgba(0, 241, 255, 0.08), rgba(0, 0, 0, 0));
+    }
+
+    .policy-text {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.72;
+      white-space: pre-wrap;
+    }
+
+    .policy-meta {
+      margin: 0;
+      color: var(--text-soft);
+      display: grid;
+      gap: 6px;
+    }
+
+    .policy-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .policy-links a {
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.08);
+      padding: 7px 11px;
+      font-size: 0.86rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="policy-shell" data-policy-page>
+    <header class="topbar">
+      <a href="../index.html#home" class="brand" aria-label="На головну">
+        <span class="brand-glyph" aria-hidden="true">
+          <img src="../assets/LOgo.png?v=20260511-2" alt="" class="brand-mark-icon" />
+        </span>
+        <span class="brand-name" aria-hidden="true">MAXONIK</span>
+      </a>
+
+      <nav class="topnav" aria-label="Навігація сторінки політики">
+        <a href="../index.html#home">Головна</a>
+        <span class="topnav-project-nav" data-project-nav>
+          <a href="../index.html#projects">Проекти</a>
+          <button type="button" class="topnav-project-toggle" data-project-nav-toggle aria-label="Відкрити список проектів">
+            ▾
+          </button>
+          <div class="topnav-project-dropdown" data-project-nav-list hidden></div>
+        </span>
+      </nav>
+    </header>
+
+    <main class="policy-main">
+      <section class="policy-block">
+        <p class="section-kicker">Privacy Policy</p>
+        <h1 data-policy-title>Завантаження...</h1>
+      </section>
+
+      <section class="policy-block">
+        <h2>Метадані</h2>
+        <p class="policy-meta">
+          <span>Проект: <strong data-policy-project></strong></span>
+          <span>Оновлено: <strong data-policy-updated></strong></span>
+        </p>
+      </section>
+
+      <section class="policy-block">
+        <h2>Текст політики</h2>
+        <p class="policy-text" data-policy-text></p>
+      </section>
+
+      <section class="policy-block">
+        <h2>Посилання</h2>
+        <div class="policy-links">
+          <a data-policy-project-link href="../index.html#projects">Відкрити сторінку проекту</a>
+          <a href="index.html">Повернутись до списку політик</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="../firebase-config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="../admin-auth.js"></script>
+  <script src="../app.js"></script>
+</body>
+</html>

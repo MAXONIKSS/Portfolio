@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Fit Track project page" />
+  <title>MAXONIK | Fit Track</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    .project-shell {
+      width: min(980px, 92vw);
+      margin-inline: auto;
+      padding-bottom: 80px;
+    }
+
+    .project-main {
+      margin-top: calc(var(--topbar-h) + 18px);
+      display: grid;
+      gap: 14px;
+    }
+
+    .project-block {
+      padding: 16px;
+      border-left: 2px solid rgba(0, 241, 255, 0.34);
+      background: linear-gradient(120deg, rgba(0, 241, 255, 0.08), rgba(0, 0, 0, 0));
+    }
+
+    .project-block p {
+      margin: 10px 0 0;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    .project-tag {
+      color: var(--neon);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-family: "Rajdhani", sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="project-shell">
+    <header class="topbar">
+      <a href="../index.html#home" class="brand" aria-label="На головну">
+        <span class="brand-glyph" aria-hidden="true">
+          <img src="../assets/LOgo.png?v=20260511-2" alt="" class="brand-mark-icon" />
+        </span>
+      </a>
+      <nav class="topnav" aria-label="Навігація сторінки проєкту">
+        <a href="../index.html#projects">Проекти</a>
+        <a href="../privacy/index.html">Політики</a>
+      </nav>
+    </header>
+
+    <main class="project-main">
+      <section class="project-block">
+        <p class="project-tag">Project Page</p>
+        <h1>Fit Track</h1>
+        <p>Це тимчасова сторінка проекту. Після додавання реального додатку тут з'являться функції, скріни, стек і посилання на реліз.</p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

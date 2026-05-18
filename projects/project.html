@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Сторінка проекту MAXONIK" />
+  <title>MAXONIK | Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    .project-shell {
+      width: min(1040px, 94vw);
+      margin-inline: auto;
+      padding-bottom: 80px;
+    }
+
+    .project-main {
+      margin-top: calc(var(--topbar-h) + 16px);
+      display: grid;
+      gap: 14px;
+    }
+
+    .project-block {
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(120deg, rgba(0, 241, 255, 0.06), rgba(0, 0, 0, 0));
+      padding: 15px;
+    }
+
+    .project-hero {
+      display: grid;
+      gap: 14px;
+    }
+
+    .project-preview {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border: 1px solid var(--line-soft);
+      background: #0a0f16;
+    }
+
+    .project-meta {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .project-meta-item {
+      border-left: 2px solid rgba(0, 241, 255, 0.3);
+      padding-left: 10px;
+    }
+
+    .project-meta-item strong {
+      display: block;
+      color: var(--neon);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+    }
+
+    .project-meta-item span {
+      color: var(--text-soft);
+    }
+
+    .project-description {
+      color: var(--text-soft);
+      line-height: 1.68;
+      margin: 0;
+    }
+
+    .project-tech {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+      color: var(--text-soft);
+    }
+
+    .project-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .project-links a {
+      text-decoration: none;
+      border: 1px solid var(--line-soft);
+      padding: 7px 11px;
+      color: var(--text);
+      background: rgba(0, 241, 255, 0.07);
+      font-size: 0.86rem;
+    }
+
+    @media (max-width: 840px) {
+      .project-meta {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="project-shell" data-project-page>
+    <header class="topbar">
+      <a href="../index.html#home" class="brand" aria-label="На головну">
+        <span class="brand-glyph" aria-hidden="true">
+          <img src="../assets/LOgo.png?v=20260511-2" alt="" class="brand-mark-icon" />
+        </span>
+      </a>
+
+      <nav class="topnav" aria-label="Навігація сторінки проекту">
+        <a href="../index.html#projects">Проекти</a>
+        <a href="../admin.html">Адмін</a>
+        <a href="../privacy/index.html">Політики</a>
+      </nav>
+    </header>
+
+    <main class="project-main">
+      <section class="project-block project-hero">
+        <p class="section-kicker">Project</p>
+        <h1 data-project-title>Завантаження...</h1>
+        <p class="project-description" data-project-summary></p>
+        <img class="project-preview" data-project-image src="../assets/projects/calorie-ai.svg" alt="Прев'ю проекту" />
+      </section>
+
+      <section class="project-block">
+        <h2>Опис</h2>
+        <p class="project-description" data-project-purpose></p>
+      </section>
+
+      <section class="project-block">
+        <h2>Технології</h2>
+        <ul class="project-tech" data-project-tech></ul>
+      </section>
+
+      <section class="project-block">
+        <h2>Метадані</h2>
+        <div class="project-meta">
+          <div class="project-meta-item">
+            <strong>ID</strong>
+            <span data-project-id></span>
+          </div>
+          <div class="project-meta-item">
+            <strong>Статус</strong>
+            <span data-project-status></span>
+          </div>
+          <div class="project-meta-item">
+            <strong>Оновлено</strong>
+            <span data-project-updated></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="project-block">
+        <h2>Посилання</h2>
+        <div class="project-links">
+          <a href="../index.html#projects">Повернутись до проектів</a>
+          <a href="../admin.html">Редагувати в адмінці</a>
+          <a data-project-privacy-link href="../privacy/index.html">Політика конфіденційності</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="../app.js"></script>
+</body>
+</html>

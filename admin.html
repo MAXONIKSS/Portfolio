@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="MAXONIK admin constructor" />
+  <title>MAXONIK | Конструктор проектів</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .admin-shell {
+      width: min(1120px, 94vw);
+      margin-inline: auto;
+      padding-bottom: 80px;
+    }
+
+    .admin-main {
+      margin-top: calc(var(--topbar-h) + 14px);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
+      gap: 16px;
+    }
+
+    .admin-guard {
+      margin-top: calc(var(--topbar-h) + 14px);
+      max-width: 520px;
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(120deg, rgba(0, 241, 255, 0.06), rgba(0, 0, 0, 0));
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .admin-guard-form {
+      display: grid;
+      gap: 8px;
+    }
+
+    .admin-guard-form input {
+      border: 1px solid var(--line-soft);
+      background: rgba(8, 14, 22, 0.86);
+      color: var(--text);
+      padding: 10px 11px;
+      font: inherit;
+    }
+
+    .admin-guard-form button {
+      width: fit-content;
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.08);
+      color: var(--text);
+      padding: 8px 12px;
+      cursor: pointer;
+      font-family: "Rajdhani", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.84rem;
+    }
+
+    .admin-guard-google {
+      width: fit-content;
+      border: 1px solid var(--line-soft);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      padding: 8px 12px;
+      cursor: pointer;
+      font-family: "Rajdhani", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.84rem;
+    }
+
+    .admin-guard-note {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.55;
+      font-size: 0.9rem;
+    }
+
+    .admin-guard-status {
+      margin: 0;
+      min-height: 18px;
+      color: #ffc2c2;
+      font-size: 0.9rem;
+    }
+
+    .admin-panel {
+      padding: 16px;
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(120deg, rgba(0, 241, 255, 0.06), rgba(0, 0, 0, 0));
+    }
+
+    .admin-panel h2 {
+      margin-bottom: 10px;
+    }
+
+    .admin-form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .admin-form label {
+      display: grid;
+      gap: 5px;
+      color: var(--text-soft);
+      font-size: 0.93rem;
+    }
+
+    .admin-form input,
+    .admin-form textarea {
+      border: 1px solid var(--line-soft);
+      background: rgba(8, 14, 22, 0.86);
+      color: var(--text);
+      padding: 10px 11px;
+      font: inherit;
+    }
+
+    .admin-form textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .admin-rich-wrap {
+      display: grid;
+      gap: 6px;
+    }
+
+    .admin-rich-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .admin-rich-tools button,
+    .admin-rich-tools select {
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.08);
+      color: var(--text);
+      padding: 5px 8px;
+      font: inherit;
+      font-size: 0.82rem;
+    }
+
+    .admin-rich-tools select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-color: #0b121b;
+      color: var(--text);
+    }
+
+    .admin-rich-tools select option {
+      background: #0b121b;
+      color: var(--text);
+    }
+
+    .admin-rich-editor {
+      min-height: 110px;
+      border: 1px solid var(--line-soft);
+      background: rgba(8, 14, 22, 0.86);
+      color: var(--text);
+      padding: 10px 11px;
+      line-height: 1.55;
+    }
+
+    .admin-rich-editor:empty::before {
+      content: attr(data-placeholder);
+      color: var(--text-soft);
+      opacity: 0.7;
+    }
+
+    .admin-image-hint {
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .admin-url-checks {
+      margin-top: 8px;
+      border: 1px solid var(--line-soft);
+      background: rgba(8, 14, 22, 0.72);
+      padding: 8px;
+      display: grid;
+      gap: 6px;
+      font-size: 0.82rem;
+    }
+
+    .admin-url-check-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+      padding-bottom: 5px;
+    }
+
+    .admin-url-check-item:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .admin-url-check-url {
+      color: var(--text-soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .admin-url-check-status {
+      font-family: "Rajdhani", sans-serif;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.76rem;
+      border: 1px solid var(--line-soft);
+      padding: 2px 6px;
+      color: #d8edf5;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .admin-url-check-status.ok {
+      color: #9effb8;
+      border-color: rgba(158, 255, 184, 0.4);
+      background: rgba(20, 93, 46, 0.35);
+    }
+
+    .admin-url-check-status.bad {
+      color: #ffc2c2;
+      border-color: rgba(255, 194, 194, 0.45);
+      background: rgba(92, 23, 23, 0.36);
+    }
+
+    .admin-preview {
+      width: 100%;
+      max-width: 380px;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border: 1px solid var(--line-soft);
+      background: #0a0f16;
+      margin-top: 8px;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .admin-actions button,
+    .admin-actions a {
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.08);
+      color: var(--text);
+      padding: 8px 12px;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: "Rajdhani", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.84rem;
+    }
+
+    .admin-nav-logout {
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.08);
+      color: var(--text);
+      padding: 7px 11px;
+      cursor: pointer;
+      font-family: "Rajdhani", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.82rem;
+    }
+
+    .admin-project-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .admin-project-item {
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.05);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .admin-project-main h3 {
+      margin: 0 0 6px;
+      font-family: "Rajdhani", sans-serif;
+      letter-spacing: 0.03em;
+    }
+
+    .admin-project-main p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+
+    .admin-project-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .admin-project-actions button {
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.08);
+      color: var(--text);
+      padding: 7px 10px;
+      cursor: pointer;
+      font-size: 0.82rem;
+    }
+
+    .admin-status {
+      margin-top: 10px;
+      color: #b8fdff;
+      min-height: 20px;
+    }
+
+    .admin-status.is-error {
+      color: #ffc2c2;
+    }
+
+    .admin-editing-banner {
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.1);
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .admin-editing-banner strong {
+      color: var(--neon);
+      font-family: "Rajdhani", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.86rem;
+    }
+
+    .admin-editing-banner button {
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.08);
+      color: var(--text);
+      padding: 6px 10px;
+      cursor: pointer;
+      font-family: "Rajdhani", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.78rem;
+    }
+
+    .admin-project-item.is-editing {
+      border-color: rgba(0, 241, 255, 0.6);
+      box-shadow: 0 0 0 1px rgba(0, 241, 255, 0.35);
+    }
+
+    @media (max-width: 980px) {
+      .admin-main {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell" data-admin-page>
+    <header class="topbar">
+      <a href="index.html#home" class="brand" aria-label="На головну">
+        <span class="brand-glyph" aria-hidden="true">
+          <img src="assets/LOgo.png?v=20260511-2" alt="" class="brand-mark-icon" />
+        </span>
+        <span class="brand-name" aria-hidden="true">MAXONIK</span>
+      </a>
+
+      <nav class="topnav" aria-label="Адмін навігація">
+        <a href="index.html#projects">Проекти</a>
+        <a href="privacy/index.html">Політики</a>
+        <button type="button" class="admin-nav-logout" data-admin-logout hidden>Вийти</button>
+      </nav>
+    </header>
+
+    <main class="admin-main" data-admin-main hidden>
+      <section class="admin-panel">
+        <p class="section-kicker">Admin Constructor</p>
+        <h2>Додати або оновити проект</h2>
+        <form class="admin-form" data-project-form>
+          <div class="admin-editing-banner" data-admin-editing hidden>
+            <span><strong>Режим редагування:</strong> <span data-admin-editing-title></span></span>
+            <button type="button" data-admin-cancel-edit>Створити новий</button>
+          </div>
+
+          <label>
+            ID (латиниця, унікальний)
+            <input name="id" placeholder="my-new-project" />
+          </label>
+
+          <label>
+            Назва проекту
+            <input name="title" placeholder="Назва додатку" required />
+          </label>
+
+          <label>
+            Короткий опис для картки
+            <div class="admin-rich-wrap" data-rich-wrap="summary">
+              <div class="admin-rich-tools">
+                <button type="button" data-rich-cmd="bold">B</button>
+                <button type="button" data-rich-cmd="italic">I</button>
+                <button type="button" data-rich-cmd="underline">U</button>
+                <select data-rich-cmd="fontName">
+                  <option value="">Шрифт</option>
+                  <option value="Arial">Arial</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Tahoma">Tahoma</option>
+                  <option value="Verdana">Verdana</option>
+                </select>
+                <select data-rich-cmd="fontSize">
+                  <option value="">Розмір</option>
+                  <option value="2">S</option>
+                  <option value="3">M</option>
+                  <option value="4">L</option>
+                  <option value="5">XL</option>
+                </select>
+                <button type="button" data-rich-cmd="justifyLeft">Ліво</button>
+                <button type="button" data-rich-cmd="justifyCenter">Центр</button>
+                <button type="button" data-rich-cmd="justifyRight">Право</button>
+              </div>
+              <div class="admin-rich-editor" contenteditable="true" data-rich-editor="summary" data-placeholder="Для чого проект і що робить"></div>
+              <input type="hidden" name="summary" required />
+            </div>
+          </label>
+
+          <label>
+            Детальний опис сторінки проекту
+            <div class="admin-rich-wrap" data-rich-wrap="purpose">
+              <div class="admin-rich-tools">
+                <button type="button" data-rich-cmd="bold">B</button>
+                <button type="button" data-rich-cmd="italic">I</button>
+                <button type="button" data-rich-cmd="underline">U</button>
+                <select data-rich-cmd="fontName">
+                  <option value="">Шрифт</option>
+                  <option value="Arial">Arial</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Tahoma">Tahoma</option>
+                  <option value="Verdana">Verdana</option>
+                </select>
+                <select data-rich-cmd="fontSize">
+                  <option value="">Розмір</option>
+                  <option value="2">S</option>
+                  <option value="3">M</option>
+                  <option value="4">L</option>
+                  <option value="5">XL</option>
+                </select>
+                <button type="button" data-rich-cmd="justifyLeft">Ліво</button>
+                <button type="button" data-rich-cmd="justifyCenter">Центр</button>
+                <button type="button" data-rich-cmd="justifyRight">Право</button>
+              </div>
+              <div class="admin-rich-editor" contenteditable="true" data-rich-editor="purpose" data-placeholder="Повний опис, ціль, користь"></div>
+              <input type="hidden" name="purpose" required />
+            </div>
+          </label>
+
+          <label>
+            Шлях до картинки (опційно, якщо не завантажуєш файл)
+            <input name="image" placeholder="assets/projects/my-image.svg" />
+          </label>
+
+          <label>
+            Завантажити картинку проекту
+            <input type="file" accept="image/*" data-image-file />
+            <span class="admin-image-hint" data-image-hint></span>
+            <img class="admin-preview" data-image-preview hidden alt="Прев'ю завантаженої картинки" />
+          </label>
+
+          <label>
+            Скріншоти телефону (URL через кому або з нового рядка, опційно)
+            <input name="screenshots" placeholder="https://.../screen1.jpg, https://.../screen2.jpg" />
+            <div class="admin-url-checks" data-screenshots-url-checks hidden></div>
+          </label>
+
+          <label>
+            Технології (через кому)
+            <input name="tech" placeholder="Flutter, Firebase, AI API" />
+          </label>
+
+          <label>
+            Статус
+            <input name="status" placeholder="В розробці / Release" />
+          </label>
+
+          <label>
+            Дата оновлення
+            <input name="updatedAt" placeholder="11.05.2026" />
+          </label>
+
+          <label>
+            Версія додатку
+            <input name="versionLabel" placeholder="v1.2.0" />
+          </label>
+
+          <label>
+            Короткий опис змін у версії
+            <textarea name="versionNotes" placeholder="Що змінилось у цій версії: багфікси, нові функції, покращення UI"></textarea>
+          </label>
+
+          <label>
+            Посилання на APK (опційно, якщо вже маєш URL)
+            <input name="appDownloadUrl" placeholder="https://.../my-app.apk" />
+          </label>
+
+          <p class="admin-image-hint">Для APK використай пряме посилання (наприклад GitHub Releases asset). Для скрінів вставляй URL через кому або кожен з нового рядка. Google Drive підтримується, але файл має бути відкритий для доступу "Anyone with the link".</p>
+
+          <label>
+            Текст політики конфіденційності для цього проекту
+            <textarea name="policyText" placeholder="Встав текст політики конфіденційності конкретно для цього проекту" required></textarea>
+          </label>
+
+          <div class="admin-actions">
+            <button type="submit">Зберегти проект</button>
+            <button type="button" data-reset-defaults>Скинути до стандарту</button>
+            <button type="button" data-export-json>Експорт JSON</button>
+            <button type="button" data-import-json>Імпорт JSON</button>
+            <input type="file" accept="application/json" data-import-file hidden />
+            <a href="index.html#projects">Переглянути на сайті</a>
+          </div>
+        </form>
+        <p class="admin-status" data-admin-status></p>
+      </section>
+
+      <section class="admin-panel">
+        <p class="section-kicker">Поточні проекти</p>
+        <h2>Список</h2>
+        <div class="admin-project-list" data-project-list></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="admin-auth.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

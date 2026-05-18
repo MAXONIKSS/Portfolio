@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Сторінка проекту MAXONIK" />
+  <title>MAXONIK | Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .project-shell {
+      width: min(1040px, 94vw);
+      margin-inline: auto;
+      padding-bottom: 80px;
+    }
+
+    .project-main {
+      margin-top: calc(var(--topbar-h) + 16px);
+      display: grid;
+      gap: 14px;
+    }
+
+    .project-block {
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(120deg, rgba(0, 241, 255, 0.06), rgba(0, 0, 0, 0));
+      padding: 15px;
+    }
+
+    .project-hero {
+      display: grid;
+      gap: 14px;
+    }
+
+    .project-preview {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border: 1px solid var(--line-soft);
+      background: #0a0f16;
+    }
+
+    .project-meta {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .project-meta-item {
+      border-left: 2px solid rgba(0, 241, 255, 0.3);
+      padding-left: 10px;
+    }
+
+    .project-meta-item strong {
+      display: block;
+      color: var(--neon);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+    }
+
+    .project-meta-item span {
+      color: var(--text-soft);
+    }
+
+    .project-description {
+      color: var(--text-soft);
+      line-height: 1.68;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+
+    .project-tech {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+      color: var(--text-soft);
+    }
+
+    .project-shots {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .project-shot {
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      object-fit: cover;
+      border: 1px solid var(--line-soft);
+      background: #0a0f16;
+      cursor: zoom-in;
+      transition: transform 0.18s ease, border-color 0.18s ease;
+    }
+
+    .project-shot:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0, 241, 255, 0.5);
+    }
+
+    .project-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: grid;
+      place-items: center;
+      padding: 26px;
+      background: rgba(2, 7, 12, 0.92);
+      backdrop-filter: blur(6px);
+    }
+
+    .project-lightbox[hidden] {
+      display: none;
+    }
+
+    .project-lightbox-image {
+      max-width: min(95vw, 1360px);
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border: 1px solid rgba(0, 241, 255, 0.36);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+      background: #07101a;
+    }
+
+    .project-lightbox-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.1);
+      color: var(--text);
+      width: 42px;
+      height: 42px;
+      font-size: 1.35rem;
+      cursor: pointer;
+    }
+
+    .project-lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.12);
+      color: var(--text);
+      width: 44px;
+      height: 58px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .project-lightbox-nav.prev {
+      left: 14px;
+    }
+
+    .project-lightbox-nav.next {
+      right: 14px;
+    }
+
+    .project-lightbox-caption {
+      position: absolute;
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      color: var(--text-soft);
+      font-size: 0.9rem;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .project-links a {
+      text-decoration: none;
+      border: 1px solid var(--line-soft);
+      padding: 7px 11px;
+      color: var(--text);
+      background: rgba(0, 241, 255, 0.07);
+      font-size: 0.86rem;
+    }
+
+    .project-download-block {
+      display: grid;
+      gap: 10px;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .project-download-kicker {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      letter-spacing: 0.03em;
+    }
+
+    .project-download-cta {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 66px;
+      padding: 14px 28px;
+      border: 1px solid rgba(0, 241, 255, 0.6);
+      color: #031217;
+      background: linear-gradient(90deg, #6ff7ff 0%, #00f1ff 46%, #8cfbff 100%);
+      font-family: "Rajdhani", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: clamp(1rem, 2vw, 1.28rem);
+      font-weight: 700;
+      background-size: 220% 220%;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+        0 0 28px rgba(0, 241, 255, 0.42);
+      animation: apk-cta-pulse 1.9s ease-in-out infinite, apk-cta-shimmer 3.2s linear infinite;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .project-download-cta:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.22) inset,
+        0 0 36px rgba(0, 241, 255, 0.62);
+    }
+
+    @keyframes apk-cta-pulse {
+      0% {
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.16) inset,
+          0 0 18px rgba(0, 241, 255, 0.35);
+      }
+
+      50% {
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.24) inset,
+          0 0 42px rgba(0, 241, 255, 0.7);
+      }
+
+      100% {
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.16) inset,
+          0 0 18px rgba(0, 241, 255, 0.35);
+      }
+    }
+
+    @keyframes apk-cta-shimmer {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      100% {
+        background-position: 100% 50%;
+      }
+    }
+
+    .project-tester-open {
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.08);
+      color: var(--text);
+      padding: 7px 12px;
+      font-family: "Rajdhani", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+
+    .project-tester-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 130;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background: rgba(2, 7, 12, 0.9);
+      backdrop-filter: blur(6px);
+    }
+
+    .project-tester-modal[hidden] {
+      display: none;
+    }
+
+    .project-tester-card {
+      width: min(520px, 94vw);
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(120deg, rgba(0, 241, 255, 0.08), rgba(6, 10, 16, 0.95));
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      text-align: left;
+    }
+
+    .project-tester-card h3 {
+      margin: 0;
+    }
+
+    .project-tester-card p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.55;
+    }
+
+    .project-tester-card input {
+      width: 100%;
+      border: 1px solid var(--line-soft);
+      background: rgba(8, 14, 22, 0.86);
+      color: var(--text);
+      padding: 10px 11px;
+      font: inherit;
+    }
+
+    .project-tester-captcha {
+      display: grid;
+      gap: 6px;
+    }
+
+    .project-tester-captcha-code {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      border: 1px dashed rgba(0, 241, 255, 0.4);
+      background: rgba(0, 241, 255, 0.08);
+      padding: 6px 10px;
+      font-family: "Rajdhani", sans-serif;
+      letter-spacing: 0.08em;
+      color: #c9fbff;
+      font-size: 0.95rem;
+    }
+
+    .project-tester-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .project-tester-actions button {
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.08);
+      color: var(--text);
+      padding: 8px 12px;
+      cursor: pointer;
+      font-family: "Rajdhani", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.82rem;
+    }
+
+    .project-tester-status {
+      min-height: 18px;
+      color: #ffc2c2;
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 840px) {
+      .project-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .project-lightbox {
+        padding: 10px;
+      }
+
+      .project-lightbox-nav {
+        width: 40px;
+        height: 52px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="project-shell" data-project-page>
+    <header class="topbar">
+      <a href="index.html#home" class="brand" aria-label="На головну">
+        <span class="brand-glyph" aria-hidden="true">
+          <img src="assets/LOgo.png?v=20260511-2" alt="" class="brand-mark-icon" />
+        </span>
+        <span class="brand-name" aria-hidden="true">MAXONIK</span>
+      </a>
+
+      <nav class="topnav" aria-label="Навігація сторінки проекту">
+        <a href="index.html#home">Головна</a>
+        <span class="topnav-project-nav" data-project-nav>
+          <button type="button" class="topnav-project-link" data-project-nav-open>Проекти</button>
+          <button type="button" class="topnav-project-toggle" data-project-nav-toggle aria-label="Відкрити список проектів">
+            ▾
+          </button>
+          <div class="topnav-project-dropdown" data-project-nav-list hidden></div>
+        </span>
+        <a href="privacy/index.html">Політики</a>
+      </nav>
+    </header>
+
+    <main class="project-main">
+      <section class="project-block project-hero">
+        <p class="section-kicker">Project</p>
+        <h1 data-project-title>Завантаження...</h1>
+        <img class="project-preview" data-project-image src="assets/projects/calorie-ai.svg" alt="Прев'ю проекту" />
+        <p class="project-description" data-project-summary></p>
+      </section>
+
+      <section class="project-block" data-project-screenshots-block hidden>
+        <h2>Скріншоти</h2>
+        <div class="project-shots" data-project-screenshots></div>
+      </section>
+
+      <section class="project-block">
+        <h2>Опис</h2>
+        <p class="project-description" data-project-purpose></p>
+      </section>
+
+      <section class="project-block">
+        <h2>Технології</h2>
+        <ul class="project-tech" data-project-tech></ul>
+      </section>
+
+      <section class="project-block">
+        <h2>Метадані</h2>
+        <div class="project-meta">
+          <div class="project-meta-item">
+            <strong>ID</strong>
+            <span data-project-id></span>
+          </div>
+          <div class="project-meta-item">
+            <strong>Статус</strong>
+            <span data-project-status></span>
+          </div>
+          <div class="project-meta-item">
+            <strong>Оновлено</strong>
+            <span data-project-updated></span>
+          </div>
+          <div class="project-meta-item">
+            <strong>Версія</strong>
+            <span data-project-version>-</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="project-block" data-project-release-block hidden>
+        <h2>Опис Версії</h2>
+        <p class="project-description" data-project-version-notes></p>
+      </section>
+
+      <section class="project-block project-download-block" data-project-download-block hidden>
+        <h2>Скачати APK</h2>
+        <p class="project-download-kicker">Актуальна версія додатку доступна для прямого завантаження.</p>
+        <a class="project-download-cta" data-project-download href="#" hidden>Скачати APK</a>
+        <button type="button" class="project-tester-open" data-tester-open>Доєднатись до команди тестувальників</button>
+      </section>
+
+      <section class="project-block">
+        <h2>Посилання</h2>
+        <div class="project-links">
+          <a href="index.html#projects">Повернутись до проектів</a>
+          <a data-project-privacy-link href="privacy/index.html">Політика конфіденційності</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="project-tester-modal" data-tester-modal hidden>
+    <div class="project-tester-card">
+      <h3>Доєднатись до команди тестувальників</h3>
+      <p>Щоб долучитись, вкажіть вашу Gmail-пошту та натисніть Доєднатись. Після цього просто очікуйте відповідь.</p>
+      <form data-tester-form>
+        <input type="email" name="testerEmail" placeholder="yourname@gmail.com" required />
+        <div class="project-tester-captcha">
+          <span class="project-tester-captcha-code" data-tester-captcha-question>5 + 3 = ?</span>
+          <input type="text" name="testerCaptcha" placeholder="Введіть результат CAPTCHA" required />
+        </div>
+        <div class="project-tester-actions">
+          <button type="button" data-tester-close>Скасувати</button>
+          <button type="submit">Доєднатись</button>
+        </div>
+      </form>
+      <div class="project-tester-status" data-tester-status></div>
+    </div>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="admin-auth.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Політики конфіденційності додатків MAXONIK" />
+  <title>MAXONIK | Політики конфіденційності</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    .policy-shell {
+      width: min(980px, 92vw);
+      margin-inline: auto;
+      padding-bottom: 80px;
+    }
+
+    .policy-main {
+      margin-top: calc(var(--topbar-h) + 18px);
+      display: grid;
+      gap: 18px;
+    }
+
+    .policy-hero {
+      padding: 18px 8px;
+      border-left: 2px solid rgba(0, 241, 255, 0.38);
+      background: linear-gradient(120deg, rgba(0, 241, 255, 0.08), rgba(0, 0, 0, 0));
+    }
+
+    .policy-hero p {
+      margin: 10px 0 0;
+      color: var(--text-soft);
+      line-height: 1.7;
+      max-width: 72ch;
+    }
+
+    .policy-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .policy-item {
+      display: grid;
+      gap: 8px;
+      padding: 14px 16px;
+      text-decoration: none;
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 241, 255, 0.04));
+      transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+
+    .policy-item:hover {
+      border-color: var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 241, 255, 0.08));
+      transform: translateY(-1px);
+    }
+
+    .policy-name {
+      font-family: "Rajdhani", sans-serif;
+      color: var(--text);
+      font-size: 1.2rem;
+      letter-spacing: 0.03em;
+    }
+
+    .policy-meta {
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .policy-links {
+      margin-top: 6px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 0.92rem;
+    }
+
+    .policy-links a {
+      color: var(--neon);
+      text-decoration: none;
+    }
+
+    .policy-links a:hover {
+      color: #a7fcff;
+      text-shadow: 0 0 12px rgba(0, 241, 255, 0.3);
+    }
+
+    @media (max-width: 860px) {
+      .policy-links {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="policy-shell">
+    <header class="topbar">
+      <a href="../index.html#home" class="brand" aria-label="На головну">
+        <span class="brand-glyph" aria-hidden="true">
+          <img src="../assets/LOgo.png?v=20260511-2" alt="" class="brand-mark-icon" />
+        </span>
+        <span class="brand-name" aria-hidden="true">MAXONIK</span>
+      </a>
+
+      <nav class="topnav" aria-label="Навігація сторінки політик">
+        <a href="../index.html#home">Головна</a>
+        <span class="topnav-project-nav" data-project-nav>
+          <a href="../index.html#projects">Проекти</a>
+          <button type="button" class="topnav-project-toggle" data-project-nav-toggle aria-label="Відкрити список проектів">
+            ▾
+          </button>
+          <div class="topnav-project-dropdown" data-project-nav-list hidden></div>
+        </span>
+      </nav>
+    </header>
+
+    <main class="policy-main">
+      <section class="policy-hero">
+        <p class="section-kicker">Privacy</p>
+        <h1>Політики конфіденційності додатків</h1>
+        <p>
+          Тут розміщуються окремі політики для кожного додатку або проекту. Такий формат дозволяє точно
+          описувати, які дані обробляються, які сервіси підключені (Firebase, рекламні мережі, AI API) та
+          як користувач може керувати своїми даними в конкретному продукті.
+        </p>
+      </section>
+
+      <section class="policy-list" aria-label="Список політик" data-policy-list>
+      </section>
+    </main>
+  </div>
+  <script src="../firebase-config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="../admin-auth.js"></script>
+  <script src="../app.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+﻿<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="MAXONIK portfolio" />
+  <title>MAXONIK</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a href="#home" class="brand" aria-label="На головну">
+        <span class="brand-glyph" aria-hidden="true">
+          <img src="assets/LOgo.png?v=20260511-2" alt="" class="brand-mark-icon" />
+        </span>
+        <span class="brand-name" aria-hidden="true">MAXONIK</span>
+      </a>
+
+      <nav class="topnav" aria-label="Головна навігація">
+        <a href="#home">Головна</a>
+        <a href="#about">Про мене</a>
+        <span class="topnav-project-nav" data-project-nav>
+          <a href="#projects">Проекти</a>
+          <button type="button" class="topnav-project-toggle" data-project-nav-toggle aria-label="Відкрити список проектів">
+            ▾
+          </button>
+          <div class="topnav-project-dropdown" data-project-nav-list hidden></div>
+        </span>
+        <a href="#contact">Контакти</a>
+        <a href="privacy/index.html">Політики</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="section-block">
+        <h1>Головна</h1>
+      </section>
+
+      <section id="about" class="section-block about-section">
+        <p class="section-kicker">Про мене</p>
+        <h2>Втілюю ідеї в якісний код</h2>
+        <p class="about-lead">
+          Я MAXONIK. Мій підхід до розробки полягає в створенні продуктів, за допомоги ШІ, які вражають своєю якістю та ефективністю.
+          Працюю від ідеї і проектування до релізу та подальшої підтримки.
+        </p>
+
+        <div class="about-grid">
+          <article class="about-item">
+            <h3>Що я роблю</h3>
+            <p>
+              Розробляю мобільні та web-рішення, будую архітектуру проектів, оптимізую продуктивність
+              і доводжу продукт до стабільного production-рівня.
+            </p>
+          </article>
+
+          <article class="about-item">
+            <h3>Ключові навички</h3>
+            <ul>
+              <li>Dart / Flutter</li>
+              <li>Clean Architecture</li>
+              <li>UI/UX реалізація</li>
+              <li>Оптимізація продуктивності</li>
+            </ul>
+          </article>
+
+          <article class="about-item">
+            <h3>Підхід до роботи</h3>
+            <p>
+              Роблю акцент на зрозумілий код, масштабовану структуру, стабільність і регулярні оновлення.
+              Для мене важливо, щоб продукт був одночасно красивим, швидким і надійним.
+            </p>
+          </article>
+        </div>
+
+        <article class="about-skill-note" aria-label="Опис моїх скілів">
+          <h3>Мій AI-підхід у розробці</h3>
+          <p>
+            Позиціоную себе як AI-автоматизатор і розробник, який використовує можливості штучного інтелекту для
+            швидкого створення стильних сайтів і сучасних додатків під конкретні задачі.
+          </p>
+          <p>
+            Я розумію код на базовому рівні, постійно навчаюсь і з кожним проектом поглиблюю технічну експертизу.
+            Цей сайт - яскравий приклад мого поточного скіла: від ідеї та структури до дизайну, контенту і реалізації.
+          </p>
+
+          <h3>Технічна практика в моїх проектах</h3>
+          <ul class="about-skill-stack">
+            <li>Працюю з Firebase: автентифікація, зберігання даних та базова серверна логіка для додатків.</li>
+            <li>Інтегрував рекламні блоки в мобільні проекти з фокусом на баланс між монетизацією та UX.</li>
+            <li>Підключав API ШІ для аналізу калорій і формував практичні сценарії використання в застосунках.</li>
+            <li>Розвиваюсь у цих напрямках постійно: від простих інтеграцій до складніших рішень і архітектури.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section id="projects" class="section-block projects-section">
+        <p class="section-kicker">Проекти</p>
+        <h2>Моє портфоліо</h2>
+        <div class="projects-drum" data-drum>
+          <button class="drum-control" type="button" data-action="prev" aria-label="Попередній проект">
+            &#8249;
+          </button>
+
+          <div class="drum-viewport" data-viewport>
+            <div class="drum-track" data-track></div>
+          </div>
+
+          <button class="drum-control" type="button" data-action="next" aria-label="Наступний проект">
+            &#8250;
+          </button>
+        </div>
+
+        <div class="drum-dots" data-dots aria-label="Навігація проектів"></div>
+        <p class="projects-empty" data-projects-empty hidden>
+          Поки що проекти не додані. Відкрий конструктор і створи перший проект.
+        </p>
+      </section>
+
+      <section id="contact" class="section-block">
+        <p class="section-kicker">Контакти</p>
+        <h2>Зв'язок зі мною</h2>
+        <p class="contact-lead">
+          Якщо маєш ідею для співпраці або проекту, напиши мені зручним способом.
+        </p>
+
+        <div class="contact-list" aria-label="Контактні дані">
+          <a class="contact-item" href="feedback.html" aria-label="Відкрити форму зворотного зв'язку">
+            <span class="contact-label">Google пошта</span>
+            <span class="contact-value">Відкрити форму зворотного зв'язку</span>
+          </a>
+
+          <a class="contact-item" href="https://www.instagram.com/maxonik_dev" target="_blank" rel="noopener noreferrer" aria-label="Instagram maxonik_dev">
+            <span class="contact-label">Instagram</span>
+            <span class="contact-value">@maxonik_dev</span>
+          </a>
+
+          <a class="contact-item" href="privacy/index.html" aria-label="Перейти до сторінки політик конфіденційності">
+            <span class="contact-label">Політика конфіденційності</span>
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="firebase-config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="admin-auth.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
