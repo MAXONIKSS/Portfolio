@@ -261,6 +261,60 @@
       font-size: 0.84rem;
     }
 
+    .admin-github-sync {
+      margin-top: 12px;
+      border: 1px dashed var(--line-soft);
+      background: rgba(0, 241, 255, 0.04);
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .admin-github-sync h3 {
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: 0.03em;
+      font-family: "Rajdhani", sans-serif;
+    }
+
+    .admin-github-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .admin-github-note {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .admin-github-inline {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .admin-github-inline button {
+      border: 1px solid var(--line-soft);
+      background: rgba(0, 241, 255, 0.08);
+      color: var(--text);
+      padding: 7px 10px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      font-family: "Rajdhani", sans-serif;
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 760px) {
+      .admin-github-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .admin-nav-logout {
       border: 1px solid var(--line-soft);
       background: rgba(0, 241, 255, 0.08);
@@ -526,6 +580,40 @@
             <input type="file" accept="application/json" data-import-file hidden />
             <a href="index.html#projects">Переглянути на сайті</a>
           </div>
+
+          <section class="admin-github-sync" data-github-sync>
+            <h3>GitHub Auto Sync</h3>
+            <p class="admin-github-note">Після збереження проектів автоматично створюється commit у GitHub (файл projects/projects-data.json), а Pages оновлюється після push.</p>
+            <div class="admin-github-grid">
+              <label>
+                Owner
+                <input name="ghOwner" placeholder="MAXONIKSS" data-gh-owner />
+              </label>
+              <label>
+                Repo
+                <input name="ghRepo" placeholder="Portfolio" data-gh-repo />
+              </label>
+              <label>
+                Branch
+                <input name="ghBranch" placeholder="main" data-gh-branch />
+              </label>
+              <label>
+                File path
+                <input name="ghPath" placeholder="projects/projects-data.json" data-gh-path />
+              </label>
+            </div>
+            <label>
+              GitHub Token (fine-grained, Contents: Read and write)
+              <input type="password" name="ghToken" placeholder="github_pat_..." autocomplete="off" data-gh-token />
+            </label>
+            <div class="admin-github-inline">
+              <label>
+                <input type="checkbox" data-gh-enabled /> Увімкнути авто-sync у GitHub
+              </label>
+              <button type="button" data-gh-save-settings>Зберегти налаштування sync</button>
+              <button type="button" data-gh-clear-token>Очистити токен</button>
+            </div>
+          </section>
         </form>
         <p class="admin-status" data-admin-status></p>
       </section>

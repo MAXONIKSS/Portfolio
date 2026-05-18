@@ -14,6 +14,7 @@
   const EXPORT_VERSION = 1;
   const CONTACT_EMAIL = "kajosiamaja@gmail.com";
   const LANGUAGE_STORAGE_KEY = "maxonik-site-language";
+  const GITHUB_SYNC_SETTINGS_KEY = "maxonik-github-sync-settings-v1";
   const AUTO_TRANSLATE_CACHE_KEY = "maxonik-auto-translate-cache-v1";
   const AUTO_TRANSLATE_CACHE_LIMIT = 180;
 
@@ -335,6 +336,144 @@
       return tr("projectDownloadBase");
     }
     return `${tr("projectDownloadWithFilePrefix")} ${cleanName}`;
+  };
+
+  const DEFAULT_GITHUB_SYNC_SETTINGS = {
+    enabled: false,
+    owner: "MAXONIKSS",
+    repo: "Portfolio",
+    branch: "main",
+    path: "projects/projects-data.json",
+    token: ""
+  };
+
+  const normalizeGitHubSyncSettings = (value) => {
+    const source = value && typeof value === "object" ? value : {};
+    return {
+      enabled: Boolean(source.enabled),
+      owner: String(source.owner || DEFAULT_GITHUB_SYNC_SETTINGS.owner).trim(),
+      repo: String(source.repo || DEFAULT_GITHUB_SYNC_SETTINGS.repo).trim(),
+      branch: String(source.branch || DEFAULT_GITHUB_SYNC_SETTINGS.branch).trim(),
+      path: String(source.path || DEFAULT_GITHUB_SYNC_SETTINGS.path).trim(),
+      token: String(source.token || "").trim()
+    };
+  };
+
+  const readGitHubSyncSettings = () => {
+    try {
+      const raw = localStorage.getItem(GITHUB_SYNC_SETTINGS_KEY);
+      if (!raw) {
+        return { ...DEFAULT_GITHUB_SYNC_SETTINGS };
+      }
+      return normalizeGitHubSyncSettings(JSON.parse(raw));
+    } catch {
+      return { ...DEFAULT_GITHUB_SYNC_SETTINGS };
+    }
+  };
+
+  const saveGitHubSyncSettings = (settings) => {
+    const normalized = normalizeGitHubSyncSettings(settings);
+    localStorage.setItem(GITHUB_SYNC_SETTINGS_KEY, JSON.stringify(normalized));
+    return normalized;
+  };
+
+  const utf8ToBase64 = (value) => {
+    const bytes = new TextEncoder().encode(String(value || ""));
+    let binary = "";
+    bytes.forEach((byte) => {
+      binary += String.fromCharCode(byte);
+    });
+    return btoa(binary);
+  };
+
+  const syncProjectsToGitHub = async (projects, reason, settings) => {
+    const current = normalizeGitHubSyncSettings(settings);
+    if (!current.enabled) {
+      return { ok: true, skipped: true };
+    }
+
+    if (!current.owner || !current.repo || !current.branch || !current.path || !current.token) {
+      return {
+        ok: false,
+        error: "GitHub sync не налаштовано: перевір owner/repo/branch/path/token."
+      };
+    }
+
+    const headers = {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${current.token}`,
+      "X-GitHub-Api-Version": "2022-11-28"
+    };
+
+    const endpoint =
+      `https://api.github.com/repos/${encodeURIComponent(current.owner)}/${encodeURIComponent(current.repo)}` +
+      `/contents/${current.path.replace(/^\/+/, "")}`;
+
+    let existingSha = "";
+    try {
+      const getResponse = await fetch(`${endpoint}?ref=${encodeURIComponent(current.branch)}`, {
+        method: "GET",
+        headers
+      });
+
+      if (getResponse.status !== 404) {
+        const getData = await getResponse.json().catch(() => null);
+        if (!getResponse.ok) {
+          return {
+            ok: false,
+            error: `GitHub sync GET failed (${getResponse.status}): ${String(getData?.message || "невідома помилка")}`
+          };
+        }
+        existingSha = String(getData?.sha || "").trim();
+      }
+    } catch {
+      return { ok: false, error: "GitHub sync GET failed: немає доступу до GitHub API." };
+    }
+
+    const payload = {
+      app: "MAXONIK",
+      version: EXPORT_VERSION,
+      source: "admin-auto-sync",
+      updatedAt: new Date().toISOString(),
+      projects: Array.isArray(projects) ? projects : []
+    };
+
+    const putBody = {
+      message: `Admin sync: ${String(reason || "update")}`,
+      content: utf8ToBase64(JSON.stringify(payload, null, 2)),
+      branch: current.branch
+    };
+
+    if (existingSha) {
+      putBody.sha = existingSha;
+    }
+
+    try {
+      const putResponse = await fetch(endpoint, {
+        method: "PUT",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(putBody)
+      });
+
+      const putData = await putResponse.json().catch(() => null);
+      if (!putResponse.ok) {
+        return {
+          ok: false,
+          error: `GitHub sync PUT failed (${putResponse.status}): ${String(putData?.message || "невідома помилка")}`
+        };
+      }
+
+      return {
+        ok: true,
+        commitUrl: String(putData?.commit?.html_url || "").trim(),
+        path: current.path
+      };
+    } catch {
+      return { ok: false, error: "GitHub sync PUT failed: немає доступу до GitHub API." };
+    }
   };
 
   const hasCyrillic = (value) => /[\u0400-\u04FF]/.test(String(value || ""));
@@ -1980,6 +2119,14 @@
     const importFileInput = adminRoot.querySelector("[data-import-file]");
     const adminMain = adminRoot.querySelector("[data-admin-main]");
     const logoutBtn = adminRoot.querySelector("[data-admin-logout]");
+    const ghOwnerInput = adminRoot.querySelector("[data-gh-owner]");
+    const ghRepoInput = adminRoot.querySelector("[data-gh-repo]");
+    const ghBranchInput = adminRoot.querySelector("[data-gh-branch]");
+    const ghPathInput = adminRoot.querySelector("[data-gh-path]");
+    const ghTokenInput = adminRoot.querySelector("[data-gh-token]");
+    const ghEnabledInput = adminRoot.querySelector("[data-gh-enabled]");
+    const ghSaveSettingsBtn = adminRoot.querySelector("[data-gh-save-settings]");
+    const ghClearTokenBtn = adminRoot.querySelector("[data-gh-clear-token]");
     const editingBanner = adminRoot.querySelector("[data-admin-editing]");
     const editingTitle = adminRoot.querySelector("[data-admin-editing-title]");
     const cancelEditBtn = adminRoot.querySelector("[data-admin-cancel-edit]");
@@ -2130,6 +2277,87 @@
       formStatus.textContent = text;
       formStatus.classList.toggle("is-error", isError);
     };
+
+    const fillGitHubSyncUi = () => {
+      const settings = readGitHubSyncSettings();
+      if (ghOwnerInput) {
+        ghOwnerInput.value = settings.owner;
+      }
+      if (ghRepoInput) {
+        ghRepoInput.value = settings.repo;
+      }
+      if (ghBranchInput) {
+        ghBranchInput.value = settings.branch;
+      }
+      if (ghPathInput) {
+        ghPathInput.value = settings.path;
+      }
+      if (ghTokenInput) {
+        ghTokenInput.value = settings.token;
+      }
+      if (ghEnabledInput) {
+        ghEnabledInput.checked = settings.enabled;
+      }
+    };
+
+    const readGitHubSyncUi = () => {
+      const existing = readGitHubSyncSettings();
+      return normalizeGitHubSyncSettings({
+        ...existing,
+        owner: ghOwnerInput?.value ?? existing.owner,
+        repo: ghRepoInput?.value ?? existing.repo,
+        branch: ghBranchInput?.value ?? existing.branch,
+        path: ghPathInput?.value ?? existing.path,
+        token: ghTokenInput?.value ?? existing.token,
+        enabled: ghEnabledInput?.checked ?? existing.enabled
+      });
+    };
+
+    const persistGitHubSyncUi = () => {
+      const saved = saveGitHubSyncSettings(readGitHubSyncUi());
+      if (ghTokenInput) {
+        ghTokenInput.value = saved.token;
+      }
+      if (ghEnabledInput) {
+        ghEnabledInput.checked = saved.enabled;
+      }
+      return saved;
+    };
+
+    const syncProjectsToGitHubAndReport = async (projects, reason) => {
+      const settings = readGitHubSyncUi();
+      saveGitHubSyncSettings(settings);
+
+      if (!settings.enabled) {
+        return { ok: true, skipped: true };
+      }
+
+      setStatus("Синхронізую зміни у GitHub...");
+      return syncProjectsToGitHub(projects, reason, settings);
+    };
+
+    fillGitHubSyncUi();
+
+    ghSaveSettingsBtn?.addEventListener("click", () => {
+      const saved = persistGitHubSyncUi();
+      if (saved.enabled && !saved.token) {
+        setStatus("Увімкнено GitHub sync, але токен порожній. Додай GitHub token.", true);
+        return;
+      }
+      setStatus("Налаштування GitHub sync збережено.");
+    });
+
+    ghClearTokenBtn?.addEventListener("click", () => {
+      if (ghTokenInput) {
+        ghTokenInput.value = "";
+      }
+      const saved = persistGitHubSyncUi();
+      if (saved.enabled) {
+        setStatus("Токен очищено. GitHub sync потребує новий токен.", true);
+      } else {
+        setStatus("Токен очищено.");
+      }
+    });
 
     const checkImageUrlReachable = (url) =>
       new Promise((resolve) => {
@@ -2325,14 +2553,19 @@
 
         saveProjects(normalized);
         const cloudResult = await saveProjectsToCloud(normalized);
+        const ghResult = await syncProjectsToGitHubAndReport(normalized, "import projects from admin");
         renderList();
         form.reset();
         resetFormState();
-        if (cloudResult.ok) {
-          setStatus(`Імпорт завершено: ${normalized.length} проект(ів) завантажено.`);
+        if (!ghResult.ok) {
+          setStatus(`Імпорт виконано, але GitHub sync не вдався: ${ghResult.error}`, true);
+        } else if (cloudResult.ok) {
+          const suffix = ghResult.skipped ? "" : " GitHub оновлено.";
+          setStatus(`Імпорт завершено: ${normalized.length} проект(ів) завантажено.${suffix}`);
         } else {
+          const ghSuffix = ghResult.skipped ? "" : " GitHub оновлено.";
           setStatus(
-            `Імпорт завершено локально: ${normalized.length} проект(ів). Cloud sync: ${cloudResult.reason}.`,
+            `Імпорт завершено локально: ${normalized.length} проект(ів). Cloud sync: ${cloudResult.reason}.${ghSuffix}`,
             true
           );
         }
@@ -2456,14 +2689,19 @@
         const next = projects.filter((item) => item.id !== deleteId);
         const updatedProjects = saveProjects(next.length > 0 ? next : DEFAULT_PROJECTS);
         const cloudResult = await saveProjectsToCloud(updatedProjects);
+        const ghResult = await syncProjectsToGitHubAndReport(updatedProjects, `delete project ${project.id}`);
         if (state.editingId === deleteId) {
           clearEditMode();
         }
         renderList();
-        if (cloudResult.ok) {
-          setStatus(`Проект видалено: ${project.title}`);
+        if (!ghResult.ok) {
+          setStatus(`Проект видалено, але GitHub sync не вдався: ${ghResult.error}`, true);
+        } else if (cloudResult.ok) {
+          const suffix = ghResult.skipped ? "" : " GitHub оновлено.";
+          setStatus(`Проект видалено: ${project.title}.${suffix}`);
         } else {
-          setStatus(`Проект видалено локально: ${project.title}. Cloud sync: ${cloudResult.reason}.`, true);
+          const ghSuffix = ghResult.skipped ? "" : " GitHub оновлено.";
+          setStatus(`Проект видалено локально: ${project.title}. Cloud sync: ${cloudResult.reason}.${ghSuffix}`, true);
         }
       }
     });
@@ -2684,12 +2922,17 @@
 
       const updatedProjects = saveProjects(projects);
       const cloudResult = await saveProjectsToCloud(updatedProjects);
+      const ghResult = await syncProjectsToGitHubAndReport(updatedProjects, `upsert project ${payload.id}`);
       renderList();
-      if (cloudResult.ok) {
-        setStatus(`Збережено проект: ${payload.title}. Політика створена за адресою ${payload.privacyUrl}`);
+      if (!ghResult.ok) {
+        setStatus(`Проект збережено, але GitHub sync не вдався: ${ghResult.error}`, true);
+      } else if (cloudResult.ok) {
+        const suffix = ghResult.skipped ? "" : ` GitHub файл оновлено (${ghResult.path}).`;
+        setStatus(`Збережено проект: ${payload.title}. Політика створена за адресою ${payload.privacyUrl}.${suffix}`);
       } else {
+        const ghSuffix = ghResult.skipped ? "" : " GitHub оновлено.";
         setStatus(
-          `Проект збережено локально: ${payload.title}. Політика: ${payload.privacyUrl}. Cloud sync: ${cloudResult.reason}.`,
+          `Проект збережено локально: ${payload.title}. Політика: ${payload.privacyUrl}. Cloud sync: ${cloudResult.reason}.${ghSuffix}`,
           true
         );
       }
@@ -2706,15 +2949,20 @@
       }
       const updatedProjects = saveProjects(DEFAULT_PROJECTS);
       const cloudResult = await saveProjectsToCloud(updatedProjects);
+      const ghResult = await syncProjectsToGitHubAndReport(updatedProjects, "reset to defaults");
       renderList();
       form.reset();
       richEditors.forEach((name) => setRichFieldValue(name, ""));
       resetFormState();
       clearEditMode();
-      if (cloudResult.ok) {
-        setStatus("Список проектів скинуто до стандартного шаблону.");
+      if (!ghResult.ok) {
+        setStatus(`Список скинуто, але GitHub sync не вдався: ${ghResult.error}`, true);
+      } else if (cloudResult.ok) {
+        const suffix = ghResult.skipped ? "" : " GitHub оновлено.";
+        setStatus(`Список проектів скинуто до стандартного шаблону.${suffix}`);
       } else {
-        setStatus(`Список скинуто локально. Cloud sync: ${cloudResult.reason}.`, true);
+        const ghSuffix = ghResult.skipped ? "" : " GitHub оновлено.";
+        setStatus(`Список скинуто локально. Cloud sync: ${cloudResult.reason}.${ghSuffix}`, true);
       }
     });
 
