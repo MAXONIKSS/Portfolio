@@ -1110,6 +1110,36 @@
     }
   };
 
+  const syncProjectsFromSnapshot = async () => {
+    try {
+      const existing = localStorage.getItem(STORAGE_KEY);
+      if (existing) {
+        return { ok: true, changed: false };
+      }
+
+      const response = await fetch("projects/projects-data.json", {
+        cache: "no-store"
+      });
+      if (!response.ok) {
+        return { ok: false, reason: `Snapshot ${response.status}` };
+      }
+
+      const items = await response.json();
+      if (!Array.isArray(items) || items.length === 0) {
+        return { ok: false, reason: "Snapshot порожній" };
+      }
+
+      const normalized = items.map(normalizeProject);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+      return { ok: true, changed: true, projects: normalized };
+    } catch (error) {
+      return {
+        ok: false,
+        reason: error?.message || "Не вдалося завантажити projects-data.json"
+      };
+    }
+  };
+
   const saveProjectsToCloud = async (projects) => {
     const db = getFirestoreDb();
     if (!db) {
@@ -3026,6 +3056,7 @@
 
   syncProjectsFromCloud()
     .catch(() => null)
+    .then(() => syncProjectsFromSnapshot().catch(() => null))
     .finally(() => {
       initLanguageSwitcher();
       applyStaticTranslations();
